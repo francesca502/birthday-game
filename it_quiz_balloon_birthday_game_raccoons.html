@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IT Quiz + Birthday Balloon Pop with Raccoons</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to top, #e6f2ff, #ffffff);
+      text-align: center;
+    }
+    #quiz, #balloon-game, #final-message {
+      display: none;
+      padding: 20px;
+    }
+    .question {
+      margin: 20px 0;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .balloon {
+      position: absolute;
+      width: 60px;
+      height: 80px;
+      border-radius: 50%;
+      cursor: pointer;
+      animation: float 6s linear;
+      box-shadow: inset -5px -10px 10px rgba(0,0,0,0.2);
+    }
+    @keyframes float {
+      0% { bottom: -100px; opacity: 0.8; }
+      100% { bottom: 100%; opacity: 0; }
+    }
+    #counter {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    #final-message h1 {
+      color: #ff3399;
+      font-size: 40px;
+      margin-top: 50px;
+    }
+    .raccoon {
+      position: fixed;
+      width: 100px;
+      bottom: 10px;
+      z-index: 1;
+    }
+    .r1 { left: 10px; transform: rotate(-10deg); }
+    .r2 { right: 10px; transform: rotate(10deg); }
+  </style>
+</head>
+<body>
+  <img src="https://i.imgur.com/GIXD3tO.png" alt="raccoon" class="raccoon r1">
+  <img src="https://i.imgur.com/GIXD3tO.png" alt="raccoon" class="raccoon r2">
+
+  <div id="start">
+    <h1>Welcome to the IT Engineer Birthday Challenge!</h1>
+    <p>Pass the quiz to unlock the birthday balloons!</p>
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div id="quiz">
+    <h2>IT Engineer Quiz</h2>
+    <form id="quizForm">
+      <div class="question">
+        <p>1. What does HTML stand for?</p>
+        <input type="radio" name="q1" value="a"> Hyper Trainer Marking Language<br>
+        <input type="radio" name="q1" value="b"> Hyper Text Markup Language<br>
+        <input type="radio" name="q1" value="c"> Hyperloop Text Machine Language<br>
+      </div>
+      <div class="question">
+        <p>2. Which one is a backend language?</p>
+        <input type="radio" name="q2" value="a"> Python<br>
+        <input type="radio" name="q2" value="b"> CSS<br>
+        <input type="radio" name="q2" value="c"> HTML<br>
+      </div>
+      <div class="question">
+        <p>3. What does API stand for?</p>
+        <input type="radio" name="q3" value="a"> Application Programming Interface<br>
+        <input type="radio" name="q3" value="b"> Application Processing Information<br>
+        <input type="radio" name="q3" value="c"> Applied Program Infrastructure<br>
+      </div>
+      <button type="submit">Submit Answers</button>
+    </form>
+    <p id="quizResult" style="color:red;"></p>
+  </div>
+
+  <div id="balloon-game">
+    <h2>Pop all the 22 Balloons!</h2>
+    <p id="counter">Balloons remaining: 22</p>
+  </div>
+
+  <div id="final-message">
+    <h1>Happy Birthday!!!</h1>
+    <p>You did it — quiz passed & all balloons popped!</p>
+  </div>
+
+<script>
+  function startQuiz() {
+    document.getElementById('start').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+  }
+
+  document.getElementById('quizForm').onsubmit = function(e) {
+    e.preventDefault();
+    const answers = {
+      q1: "b",
+      q2: "a",
+      q3: "a"
+    };
+    let score = 0;
+    for (let q in answers) {
+      const selected = document.querySelector('input[name="'+q+'"]:checked');
+      if (selected && selected.value === answers[q]) {
+        score++;
+      }
+    }
+    if (score === 3) {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('balloon-game').style.display = 'block';
+      startBalloonGame();
+    } else {
+      document.getElementById('quizResult').textContent = "Oops! You need all correct to continue!";
+    }
+  };
+
+  let popped = 0;
+
+  function startBalloonGame() {
+    for (let i = 0; i < 22; i++) {
+      createBalloon();
+    }
+  }
+
+  function createBalloon() {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.style.background = randomColor();
+    balloon.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+    balloon.onclick = function() {
+      balloon.remove();
+      popped++;
+      document.getElementById('counter').textContent = 'Balloons remaining: ' + (22 - popped);
+      if (popped === 22) {
+        document.getElementById('balloon-game').style.display = 'none';
+        document.getElementById('final-message').style.display = 'block';
+      }
+    };
+    document.body.appendChild(balloon);
+    setTimeout(() => balloon.remove(), 8000);
+  }
+
+  function randomColor() {
+    const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99ff'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+</script>
+</body>
+</html>
